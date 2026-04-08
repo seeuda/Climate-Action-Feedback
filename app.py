@@ -31,7 +31,7 @@ def main() -> None:
     st.set_page_config(page_title="Climate-Action-Feedback", page_icon="🌍", layout="centered")
 
     st.title("氣候變遷公眾參與活動問卷")
-    st.caption("版本更新：優化排他性分類與動態填報欄位")
+    st.caption("版本更新：5分制量表與產業分類優化")
     
     with st.form("survey_form", clear_on_submit=True):
         st.subheader("一、 基本資料統計")
@@ -47,28 +47,30 @@ def main() -> None:
 
         st.divider()
         
-        # 社會角色：優化敘述以建立排他性
+        # 1. 社會角色：優化互斥性與選填欄位
         identity_role = st.radio(
             "您的主要身分（社會角色）：",
-            ["一般民眾（不具備幹部或志工身分）", "村里鄰長 / 社區幹部 / 志工", "其他"],
-            index=None,
-            help="請選擇今日參與活動最主要的身分。"
+            ["一般民眾（不具備社區幹部或志工身分）", "村里鄰長 / 社區幹部 / 志工", "其他"],
+            index=None
         )
         
-        # 動態顯示其他說明欄位（選填）
-        other_identity_text = ""
+        other_role_text = ""
         if identity_role == "其他":
-            other_identity_text = st.text_input("請說明您的身分（選填）：", placeholder="例如：媒體、學術單位")
+            other_role_text = st.text_input("請說明身分（選填）：")
 
-        # 從業類別
+        # 2. 從業類別：合併工、商、服務業並增加選填欄位
         industry_type = st.radio(
             "您的從業類別：",
-            ["軍公教", "農林漁牧業", "製造業 / 工業", "商業 / 服務業", "家庭管理 / 退休", "學生", "其他"],
+            ["軍公教", "農林漁牧業", "工/商/服務業", "家庭管理 / 退休", "學生", "其他"],
             index=None,
             horizontal=True
         )
+        
+        other_industry_text = ""
+        if industry_type == "其他":
+            other_industry_text = st.text_input("請說明行業（選填）：")
 
-        # 特定族群（選填）
+        # 3. 特定族群
         specific_group = st.selectbox(
             "特定族群屬性（選填）：",
             ["不具備下述身分", "新住民", "原住民", "其他特定族群"],
@@ -78,15 +80,21 @@ def main() -> None:
         st.divider()
         st.subheader("二、 活動感受與友善評估")
         
-        # 滿意度：左至右為不同意至同意
-        scores = {"非常不同意": 1, "不同意": 2, "同意": 3, "非常同意": 4}
+        # 4. 五分制量表：預設在 4分 (同意)
+        scores = {
+            "1分 (非常不同意)": 1,
+            "2分 (不同意)": 2,
+            "3分 (普通)": 3,
+            "4分 (同意)": 4,
+            "5分 (非常同意)": 5
+        }
         opts = list(scores.keys())
 
-        q1 = st.select_slider("1. 資訊易讀性（簡單易懂）", options=opts, value="同意")
-        q2 = st.select_slider("2. 意識提升（了解氣候對生活影響）", options=opts, value="同意")
-        q3 = st.select_slider("3. 環境友善（場地安全便利）", options=opts, value="同意")
-        q4 = st.select_slider("4. 參與便利（時段符合家庭工作）", options=opts, value="同意")
-        q5 = st.select_slider("5. 整體滿意度", options=opts, value="同意")
+        q1 = st.select_slider("1. 資訊易讀性（簡單易懂）", options=opts, value="4分 (同意)")
+        q2 = st.select_slider("2. 意識提升（了解氣候對生活影響）", options=opts, value="4分 (同意)")
+        q3 = st.select_slider("3. 環境友善（場地安全便利）", options=opts, value="4分 (同意)")
+        q4 = st.select_slider("4. 參與便利（時段符合家庭工作）", options=opts, value="4分 (同意)")
+        q5 = st.select_slider("5. 整體滿意度", options=opts, value="4分 (同意)")
 
         st.divider()
         st.subheader("三、 開放性建議")
@@ -105,8 +113,9 @@ def main() -> None:
                     st.error(err)
                 return
 
-            # 處理身分顯示邏輯：若為其他則合併文字說明
-            final_role = f"其他 ({other_identity_text})" if identity_role == "其他" and other_identity_text else identity_role
+            # 合併其他選項文字
+            final_role = f"其他 ({other_role_text})" if identity_role == "其他" and other_role_text else identity_role
+            final_industry = f"其他 ({other_industry_text})" if industry_type == "其他" and other_industry_text else industry_type
 
             record = {
                 "時間戳記": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
@@ -115,7 +124,7 @@ def main() -> None:
                 "行政區": township,
                 "首次參加": is_first,
                 "社會角色": final_role,
-                "從業類別": industry_type,
+                "從業類別": final_industry,
                 "族群屬性": specific_group if specific_group != "不具備下述身分" else "",
                 "Q1資訊易讀": scores[q1],
                 "Q2意識提升": scores[q2],
