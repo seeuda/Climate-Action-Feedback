@@ -31,7 +31,7 @@ def main() -> None:
     st.set_page_config(page_title="Climate-Action-Feedback", page_icon="🌍", layout="centered")
 
     st.title("氣候變遷公眾參與活動問卷")
-    st.caption("版本更新：精簡分類架構與 UI 優化")
+    st.caption("版本更新：優化排他性分類與動態填報欄位")
     
     with st.form("survey_form", clear_on_submit=True):
         st.subheader("一、 基本資料統計")
@@ -47,35 +47,38 @@ def main() -> None:
 
         st.divider()
         
-        # 1. 社會角色：整併村里領袖與社區幹部 
+        # 社會角色：優化敘述以建立排他性
         identity_role = st.radio(
             "您的主要身分（社會角色）：",
-            ["一般居民", "村里鄰長 / 社區幹部 / 志工", "其他"],
+            ["一般民眾（不具備幹部或志工身分）", "村里鄰長 / 社區幹部 / 志工", "其他"],
             index=None,
-            help="此為必填項目。"
+            help="請選擇今日參與活動最主要的身分。"
         )
+        
+        # 動態顯示其他說明欄位（選填）
+        other_identity_text = ""
+        if identity_role == "其他":
+            other_identity_text = st.text_input("請說明您的身分（選填）：", placeholder="例如：媒體、學術單位")
 
-        # 2. 從業類別：納入「軍公教」並維持產業區分
+        # 從業類別
         industry_type = st.radio(
             "您的從業類別：",
             ["軍公教", "農林漁牧業", "製造業 / 工業", "商業 / 服務業", "家庭管理 / 退休", "學生", "其他"],
             index=None,
-            horizontal=True,
-            help="此為必填項目。"
+            horizontal=True
         )
 
-        # 3. 特定族群：採 Selectbox 解決 Radio 無法取消選取的問題 
+        # 特定族群（選填）
         specific_group = st.selectbox(
             "特定族群屬性（選填）：",
             ["不具備下述身分", "新住民", "原住民", "其他特定族群"],
-            index=0,
-            help="若不具備特定屬性，請保留預設值。"
+            index=0
         )
 
         st.divider()
         st.subheader("二、 活動感受與友善評估")
         
-        # 4. 滿意度調整：滿意度（非常同意）改為在右側，更符合直覺 [cite: 11]
+        # 滿意度：左至右為不同意至同意
         scores = {"非常不同意": 1, "不同意": 2, "同意": 3, "非常同意": 4}
         opts = list(scores.keys())
 
@@ -91,7 +94,6 @@ def main() -> None:
         need = st.text_area("參與不便之處（例如：交通、照顧需求）：")
 
         if st.form_submit_button("送出問卷"):
-            # 防呆檢查
             errors = []
             if not township: errors.append("「居住地區」尚未填寫")
             if age == "請選擇": errors.append("「年齡層」尚未選擇")
@@ -103,13 +105,16 @@ def main() -> None:
                     st.error(err)
                 return
 
+            # 處理身分顯示邏輯：若為其他則合併文字說明
+            final_role = f"其他 ({other_identity_text})" if identity_role == "其他" and other_identity_text else identity_role
+
             record = {
                 "時間戳記": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                 "性別": gender,
                 "年齡": age,
                 "行政區": township,
                 "首次參加": is_first,
-                "社會角色": identity_role,
+                "社會角色": final_role,
                 "從業類別": industry_type,
                 "族群屬性": specific_group if specific_group != "不具備下述身分" else "",
                 "Q1資訊易讀": scores[q1],
@@ -121,12 +126,12 @@ def main() -> None:
                 "改善建議": need
             }
 
-            with st.spinner("資料傳送中..."):
+            with st.spinner("資料上傳中..."):
                 if save_to_gsheet(record):
-                    st.success("提交成功！感謝參與。")
+                    st.success("提交成功")
                     st.balloons()
                 else:
-                    st.error("上傳失敗，請聯繫管理員。")
+                    st.error("系統連線失敗")
 
 if __name__ == "__main__":
     main()
