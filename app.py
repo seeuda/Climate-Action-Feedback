@@ -48,6 +48,7 @@ def main() -> None:
             age = st.selectbox("您的年齡層：", ["請選擇", "18 歲以下", "19-35 歲", "36-50 歲", "51-64 歲", "65 歲以上"])
         
         with c2:
+            st.markdown('<div id="township-field"></div>', unsafe_allow_html=True)
             township = st.text_input("居住地區（彰化縣）：", placeholder="例如：彰化市")
             is_first = st.radio("首次參加此類活動？", ["是", "否"], horizontal=True)
 
@@ -116,6 +117,8 @@ def main() -> None:
             if errors:
                 for err in errors:
                     st.error(err)
+                if not township:
+                    st.markdown("👉 [點我前往填寫「居住地區」](#township-field)")
                 return
 
             # 資料整合邏輯
