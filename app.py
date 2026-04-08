@@ -13,13 +13,11 @@ logger = logging.getLogger(__name__)
 def save_to_gsheet(data: Dict[str, Any]) -> bool:
     try:
         scopes = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
-        # 憑證資訊請存放在 Streamlit Secrets 中
         creds = Credentials.from_service_account_info(st.secrets["gcp_service_account"], scopes=scopes)
         client = gspread.authorize(creds)
         spreadsheet_id = "1CRbnOGaIfbXu-ZIeKQMgThN2JT3fT6qWRqaMQamQmMo"
         sheet = client.open_by_key(spreadsheet_id).get_worksheet(0)
         
-        # 若試算表為空，自動寫入標題列
         if not sheet.get_all_values():
             sheet.append_row(list(data.keys()))
             
@@ -33,7 +31,7 @@ def main() -> None:
     st.set_page_config(page_title="Climate-Action-Feedback", page_icon="🌍", layout="centered")
 
     st.title("氣候變遷公眾參與活動問卷")
-    st.caption("版本更新：族群屬性調整為選填模式")
+    st.caption("版本更新：強化在地產業與基層治理分類")
     
     with st.form("survey_form", clear_on_submit=True):
         st.subheader("一、 基本資料統計")
@@ -49,18 +47,27 @@ def main() -> None:
 
         st.divider()
         
-        # 社會角色：必填防呆
+        # 社會角色：反映基層治理結構
         identity_role = st.radio(
             "您的主要身分（社會角色）：",
-            ["一般居民", "環保志工", "社區發展協會幹部", "公務人員", "其他"],
+            ["一般居民", "村里鄰長 / 地方代表", "社區幹部 / 志工", "政府機關 / 承辦人員", "學生", "其他"],
             index=None,
-            help="此為必填項目。"
+            help="此為必填項目，用於區分參與者層級。"
         )
 
-        # 族群屬性：選填模式，預設不選取，不顯示冗餘說明
+        # 產業類別：納入彰化核心產業
+        industry_type = st.radio(
+            "您的從業類別（影響調適感知）：",
+            ["農林漁牧業", "製造業 / 工業", "商業 / 服務業", "家庭管理 / 退休", "學生", "其他"],
+            index=None,
+            horizontal=True,
+            help="氣候變遷對不同產業有不同衝擊，此資料極具參考價值。"
+        )
+
+        # 族群屬性：選填模式
         specific_group = st.radio(
             "特定族群屬性（選填）：",
-            ["新住民", "原住民", "其他特定對象"],
+            ["新住民", "原住民", "主要家庭照顧者", "身心障礙者"],
             index=None,
             horizontal=True,
             help="若不具備上述身分，請直接跳過。"
@@ -88,6 +95,7 @@ def main() -> None:
             if not township: errors.append("「居住地區」尚未填寫")
             if age == "請選擇": errors.append("「年齡層」尚未選擇")
             if identity_role is None: errors.append("「主要身分」尚未選擇")
+            if industry_type is None: errors.append("「從業類別」尚未選擇")
             
             if errors:
                 for err in errors:
@@ -101,7 +109,8 @@ def main() -> None:
                 "行政區": township,
                 "首次參加": is_first,
                 "社會角色": identity_role,
-                "族群屬性": specific_group if specific_group else "", # 未選取則傳送空字串
+                "從業類別": industry_type,
+                "族群屬性": specific_group if specific_group else "",
                 "Q1資訊易讀": scores[q1],
                 "Q2意識提升": scores[q2],
                 "Q3環境友善": scores[q3],
@@ -116,7 +125,7 @@ def main() -> None:
                     st.success("提交成功！")
                     st.balloons()
                 else:
-                    st.error("上傳失敗，請確認網路或 Secrets 設定。")
+                    st.error("上傳失敗，請聯繫管理員。")
 
 if __name__ == "__main__":
     main()
