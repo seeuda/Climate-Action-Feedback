@@ -117,7 +117,7 @@ def main() -> None:
             if errors:
                 for err in errors:
                     st.error(err)
-                st.markdown("👉 [點我前往填寫基本資料](#basic-info-section)")
+                st.markdown("👉 [前往補充填寫資料](#basic-info-section)")
                 return
 
             # 資料整合邏輯
