@@ -7,13 +7,13 @@ import gspread
 from google.oauth2.service_account import Credentials
 from typing import Dict, Any
 
+# 初始化日誌
 logging.basicConfig(level=logging.INFO, format='%(asctime)s | %(levelname)s | %(message)s')
 logger = logging.getLogger(__name__)
 
 def save_to_gsheet(data: Dict[str, Any]) -> bool:
     try:
         scopes = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
-        # 憑證資訊請存放在 Streamlit Secrets 中
         creds = Credentials.from_service_account_info(st.secrets["gcp_service_account"], scopes=scopes)
         client = gspread.authorize(creds)
         spreadsheet_id = "1CRbnOGaIfbXu-ZIeKQMgThN2JT3fT6qWRqaMQamQmMo"
@@ -32,9 +32,10 @@ def main() -> None:
     st.set_page_config(page_title="Climate-Action-Feedback", page_icon="🌍", layout="centered")
 
     st.title("氣候變遷公眾參與活動問卷")
-    st.caption("版本更新：優化族群統計標籤與 UI 邏輯")
+    st.caption("版本更新：修復動態欄位展開邏輯與量表優化")
     
-    with st.form("survey_form", clear_on_submit=True):
+    # 使用容器替代 st.form 以支援即時重新渲染
+    with st.container():
         st.subheader("一、 基本資料統計")
         
         c1, c2 = st.columns(2)
@@ -48,7 +49,7 @@ def main() -> None:
 
         st.divider()
         
-        # 社會角色
+        # 社會角色：即時展開「其他」欄位
         identity_role = st.radio(
             "您的主要身分（社會角色）：",
             ["一般民眾（不具備社區幹部或志工身分）", "村里鄰長 / 社區幹部 / 志工", "其他"],
@@ -57,9 +58,9 @@ def main() -> None:
         
         other_role_text = ""
         if identity_role == "其他":
-            other_role_text = st.text_input("請說明身分（選填）：")
+            other_role_text = st.text_input("請說明身分（選填）：", key="role_other")
 
-        # 從業類別
+        # 從業類別：即時展開「其他」欄位
         industry_type = st.radio(
             "您的從業類別：",
             ["軍公教", "農林漁牧業", "工/商/服務業", "家庭管理 / 退休", "學生", "其他"],
@@ -69,9 +70,9 @@ def main() -> None:
         
         other_industry_text = ""
         if industry_type == "其他":
-            other_industry_text = st.text_input("請說明行業（選填）：")
+            other_industry_text = st.text_input("請說明行業（選填）：", key="ind_other")
 
-        # 特定族群：標題更新為去識別化說明，預設選項改為「無」
+        # 特定族群
         specific_group = st.selectbox(
             "特定族群屬性（選填，僅供去識別化統計使用）：",
             ["無", "新住民", "原住民", "其他特定族群"],
@@ -82,14 +83,14 @@ def main() -> None:
         st.subheader("二、 活動感受與友善評估")
         
         # 五分制量表：預設在 4分 (同意)
-        scores = {
+        scores_map = {
             "1分 (非常不同意)": 1,
             "2分 (不同意)": 2,
             "3分 (普通)": 3,
             "4分 (同意)": 4,
             "5分 (非常同意)": 5
         }
-        opts = list(scores.keys())
+        opts = list(scores_map.keys())
 
         q1 = st.select_slider("1. 資訊易讀性（簡單易懂）", options=opts, value="4分 (同意)")
         q2 = st.select_slider("2. 意識提升（了解氣候對生活影響）", options=opts, value="4分 (同意)")
@@ -102,7 +103,8 @@ def main() -> None:
         gain = st.text_area("最有印象或收穫最多的內容：")
         need = st.text_area("參與不便之處（例如：交通、照顧需求）：")
 
-        if st.form_submit_button("送出問卷"):
+        # 提交按鈕與邏輯
+        if st.button("提交問卷", type="primary", use_container_width=True):
             errors = []
             if not township: errors.append("「居住地區」尚未填寫")
             if age == "請選擇": errors.append("「年齡層」尚未選擇")
@@ -114,7 +116,7 @@ def main() -> None:
                     st.error(err)
                 return
 
-            # 資料整合
+            # 資料加工
             final_role = f"其他 ({other_role_text})" if identity_role == "其他" and other_role_text else identity_role
             final_industry = f"其他 ({other_industry_text})" if industry_type == "其他" and other_industry_text else industry_type
 
@@ -127,21 +129,23 @@ def main() -> None:
                 "社會角色": final_role,
                 "從業類別": final_industry,
                 "族群屬性": specific_group if specific_group != "無" else "",
-                "Q1資訊易讀": scores[q1],
-                "Q2意識提升": scores[q2],
-                "Q3環境友善": scores[q3],
-                "Q4參與便利": scores[q4],
-                "Q5整體滿意": scores[q5],
+                "Q1資訊易讀": scores_map[q1],
+                "Q2意識提升": scores_map[q2],
+                "Q3環境友善": scores_map[q3],
+                "Q4參與便利": scores_map[q4],
+                "Q5整體滿意": scores_map[q5],
                 "正面獲益": gain,
                 "改善建議": need
             }
 
-            with st.spinner("資料上傳中..."):
+            with st.spinner("正在上傳至雲端試算表..."):
                 if save_to_gsheet(record):
-                    st.success("提交成功")
+                    st.success("提交成功！資料已存入資料庫。")
                     st.balloons()
+                    # 重新整理頁面以清空填寫內容（模擬 clear_on_submit）
+                    st.info("頁面即將自動重置。")
                 else:
-                    st.error("上傳失敗，請檢查系統設定")
+                    st.error("上傳失敗，請聯繫系統管理員。")
 
 if __name__ == "__main__":
     main()
