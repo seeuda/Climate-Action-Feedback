@@ -13,6 +13,7 @@ logger = logging.getLogger(__name__)
 def save_to_gsheet(data: Dict[str, Any]) -> bool:
     try:
         scopes = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
+        # 憑證資訊請存放在 Streamlit Secrets 中
         creds = Credentials.from_service_account_info(st.secrets["gcp_service_account"], scopes=scopes)
         client = gspread.authorize(creds)
         spreadsheet_id = "1CRbnOGaIfbXu-ZIeKQMgThN2JT3fT6qWRqaMQamQmMo"
@@ -31,7 +32,7 @@ def main() -> None:
     st.set_page_config(page_title="Climate-Action-Feedback", page_icon="🌍", layout="centered")
 
     st.title("氣候變遷公眾參與活動問卷")
-    st.caption("版本更新：5分制量表與產業分類優化")
+    st.caption("版本更新：優化族群統計標籤與 UI 邏輯")
     
     with st.form("survey_form", clear_on_submit=True):
         st.subheader("一、 基本資料統計")
@@ -47,7 +48,7 @@ def main() -> None:
 
         st.divider()
         
-        # 1. 社會角色：優化互斥性與選填欄位
+        # 社會角色
         identity_role = st.radio(
             "您的主要身分（社會角色）：",
             ["一般民眾（不具備社區幹部或志工身分）", "村里鄰長 / 社區幹部 / 志工", "其他"],
@@ -58,7 +59,7 @@ def main() -> None:
         if identity_role == "其他":
             other_role_text = st.text_input("請說明身分（選填）：")
 
-        # 2. 從業類別：合併工、商、服務業並增加選填欄位
+        # 從業類別
         industry_type = st.radio(
             "您的從業類別：",
             ["軍公教", "農林漁牧業", "工/商/服務業", "家庭管理 / 退休", "學生", "其他"],
@@ -70,17 +71,17 @@ def main() -> None:
         if industry_type == "其他":
             other_industry_text = st.text_input("請說明行業（選填）：")
 
-        # 3. 特定族群
+        # 特定族群：標題更新為去識別化說明，預設選項改為「無」
         specific_group = st.selectbox(
-            "特定族群屬性（選填）：",
-            ["不具備下述身分", "新住民", "原住民", "其他特定族群"],
+            "特定族群屬性（選填，僅供去識別化統計使用）：",
+            ["無", "新住民", "原住民", "其他特定族群"],
             index=0
         )
 
         st.divider()
         st.subheader("二、 活動感受與友善評估")
         
-        # 4. 五分制量表：預設在 4分 (同意)
+        # 五分制量表：預設在 4分 (同意)
         scores = {
             "1分 (非常不同意)": 1,
             "2分 (不同意)": 2,
@@ -113,7 +114,7 @@ def main() -> None:
                     st.error(err)
                 return
 
-            # 合併其他選項文字
+            # 資料整合
             final_role = f"其他 ({other_role_text})" if identity_role == "其他" and other_role_text else identity_role
             final_industry = f"其他 ({other_industry_text})" if industry_type == "其他" and other_industry_text else industry_type
 
@@ -125,7 +126,7 @@ def main() -> None:
                 "首次參加": is_first,
                 "社會角色": final_role,
                 "從業類別": final_industry,
-                "族群屬性": specific_group if specific_group != "不具備下述身分" else "",
+                "族群屬性": specific_group if specific_group != "無" else "",
                 "Q1資訊易讀": scores[q1],
                 "Q2意識提升": scores[q2],
                 "Q3環境友善": scores[q3],
@@ -140,7 +141,7 @@ def main() -> None:
                     st.success("提交成功")
                     st.balloons()
                 else:
-                    st.error("系統連線失敗")
+                    st.error("上傳失敗，請檢查系統設定")
 
 if __name__ == "__main__":
     main()
