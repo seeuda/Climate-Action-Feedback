@@ -36,7 +36,7 @@ def main() -> None:
     st.set_page_config(page_title="Climate-Action-Feedback", page_icon="🌍", layout="centered")
 
     st.title("氣候變遷公眾參與活動問卷")
-    st.caption("版本更新：全項目動態填寫支援與資料整合優化")
+    st.caption("彰化縣環境保護局感謝您的參與")
     
     # 使用標準容器以確保動態欄位即時渲染
     with st.container():
