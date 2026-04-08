@@ -1,11 +1,27 @@
-# Climate-Action-Feedback
+# Climate-Action-Feedback (氣候變遷公眾參與活動問卷系統)
 
-此專案為氣候變遷公眾參與活動設計的 MVP 問卷系統。
+專為彰化縣氣候變遷調適活動設計之 Web App 問卷系統。本工具旨在蒐集符合「性別影響評估 (GIA)」需求之統計數據，並實現填報資料與雲端試算表之即時同步。
 
-## 使用說明
-1. 確保環境已安裝 Python 3.10+
-2. 執行 `pip install -r requirements.txt`
-3. 啟動指令：`streamlit run app.py`
+## 系統核心功能
+* **性別統計對齊**：支援性別、年齡、行政區與社會角色之交叉統計。
+* **產業與身分優化**：整合「工/商/服務業」與「村里鄰長/社區幹部」等互斥性分類。
+* **動態欄位邏輯**：針對「其他」選項實作即時展開功能，確保填答流暢。
+* **五分制滿意度**：採用 5 分制評估量表（預設值為 4 分：同意）。
+* **雲端去識別化儲存**：數據即時傳送至 Google Sheets，並具備族群屬性選填說明。
 
-## 資料輸出
-填報結果將自動儲存於 `feedback_data.csv`，編碼格式為 UTF-8 BOM，可直接供 Excel 使用。
+## 運行環境說明
+本專案基於 Python 與 Streamlit 框架開發。依照執行情境，系統需求如下：
+
+* **雲端執行模式 (建議)**：
+  當專案部署於 Streamlit Cloud 時，雲端平台將根據 `requirements.txt` 自動配置運行環境。您的本機裝置無需安裝 Python，僅需透過瀏覽器即可運行。
+* **本機開發模式 (選配)**：
+  若需在個人電腦進行離線預覽，則需安裝 Python 3.10+ 並執行 `pip install -r requirements.txt`。
+
+## 快速啟動與配置
+1. **GitHub 部署**：將本專案推送至 GitHub 儲存庫。
+2. **連結雲端**：於 Streamlit Cloud 關聯該儲存庫並啟動 `app.py`。
+3. **Secrets 金鑰配置**：
+   在 Streamlit Cloud 的 `Secrets` 設定區塊，貼入 Google 服務帳號金鑰資訊。
+
+## 技術規格
+本系統採用標準容器化渲染（Standard Container Rendering）替代傳統表單模式。此架構確保「其他」選項被點選時，網頁能立即重新渲染並顯示對應的選填文字輸入框。
