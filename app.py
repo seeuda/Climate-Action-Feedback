@@ -31,7 +31,7 @@ def main() -> None:
     st.set_page_config(page_title="Climate-Action-Feedback", page_icon="🌍", layout="centered")
 
     st.title("氣候變遷公眾參與活動問卷")
-    st.caption("版本更新：強化在地產業與基層治理分類")
+    st.caption("版本更新：精簡分類架構與 UI 優化")
     
     with st.form("survey_form", clear_on_submit=True):
         st.subheader("一、 基本資料統計")
@@ -47,36 +47,36 @@ def main() -> None:
 
         st.divider()
         
-        # 社會角色：反映基層治理結構
+        # 1. 社會角色：整併村里領袖與社區幹部 
         identity_role = st.radio(
             "您的主要身分（社會角色）：",
-            ["一般居民", "村里鄰長 / 地方代表", "社區幹部 / 志工", "政府機關 / 承辦人員", "學生", "其他"],
+            ["一般居民", "村里鄰長 / 社區幹部 / 志工", "其他"],
             index=None,
-            help="此為必填項目，用於區分參與者層級。"
+            help="此為必填項目。"
         )
 
-        # 產業類別：納入彰化核心產業
+        # 2. 從業類別：納入「軍公教」並維持產業區分
         industry_type = st.radio(
-            "您的從業類別（影響調適感知）：",
-            ["農林漁牧業", "製造業 / 工業", "商業 / 服務業", "家庭管理 / 退休", "學生", "其他"],
+            "您的從業類別：",
+            ["軍公教", "農林漁牧業", "製造業 / 工業", "商業 / 服務業", "家庭管理 / 退休", "學生", "其他"],
             index=None,
             horizontal=True,
-            help="氣候變遷對不同產業有不同衝擊，此資料極具參考價值。"
+            help="此為必填項目。"
         )
 
-        # 族群屬性：選填模式
-        specific_group = st.radio(
+        # 3. 特定族群：採 Selectbox 解決 Radio 無法取消選取的問題 
+        specific_group = st.selectbox(
             "特定族群屬性（選填）：",
-            ["新住民", "原住民", "主要家庭照顧者", "身心障礙者"],
-            index=None,
-            horizontal=True,
-            help="若不具備上述身分，請直接跳過。"
+            ["不具備下述身分", "新住民", "原住民", "其他特定族群"],
+            index=0,
+            help="若不具備特定屬性，請保留預設值。"
         )
 
         st.divider()
         st.subheader("二、 活動感受與友善評估")
         
-        scores = {"非常同意": 4, "同意": 3, "不同意": 2, "非常不同意": 1}
+        # 4. 滿意度調整：滿意度（非常同意）改為在右側，更符合直覺 [cite: 11]
+        scores = {"非常不同意": 1, "不同意": 2, "同意": 3, "非常同意": 4}
         opts = list(scores.keys())
 
         q1 = st.select_slider("1. 資訊易讀性（簡單易懂）", options=opts, value="同意")
@@ -87,10 +87,11 @@ def main() -> None:
 
         st.divider()
         st.subheader("三、 開放性建議")
-        gain = st.text_area("收穫最多的內容：")
-        need = st.text_area("參與不便之處（交通、時間、照顧）：")
+        gain = st.text_area("最有印象或收穫最多的內容：")
+        need = st.text_area("參與不便之處（例如：交通、照顧需求）：")
 
         if st.form_submit_button("送出問卷"):
+            # 防呆檢查
             errors = []
             if not township: errors.append("「居住地區」尚未填寫")
             if age == "請選擇": errors.append("「年齡層」尚未選擇")
@@ -110,7 +111,7 @@ def main() -> None:
                 "首次參加": is_first,
                 "社會角色": identity_role,
                 "從業類別": industry_type,
-                "族群屬性": specific_group if specific_group else "",
+                "族群屬性": specific_group if specific_group != "不具備下述身分" else "",
                 "Q1資訊易讀": scores[q1],
                 "Q2意識提升": scores[q2],
                 "Q3環境友善": scores[q3],
@@ -122,7 +123,7 @@ def main() -> None:
 
             with st.spinner("資料傳送中..."):
                 if save_to_gsheet(record):
-                    st.success("提交成功！")
+                    st.success("提交成功！感謝參與。")
                     st.balloons()
                 else:
                     st.error("上傳失敗，請聯繫管理員。")
