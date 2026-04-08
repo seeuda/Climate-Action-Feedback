@@ -3,32 +3,46 @@ import streamlit as st
 import pandas as pd
 import datetime
 import logging
-import os
+import gspread
+from google.oauth2.service_account import Credentials
 from typing import Dict, Any
 
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s | %(levelname)s | %(message)s'
-)
+# 初始化日誌
+logging.basicConfig(level=logging.INFO, format='%(asctime)s | %(levelname)s | %(message)s')
 logger = logging.getLogger(__name__)
 
-def save_to_csv(data: Dict[str, Any], filename: str = "feedback_data.csv") -> bool:
+def save_to_gsheet(data: Dict[str, Any]) -> bool:
     """
-    將結構化資料儲存至本地 CSV 檔案。
+    將調查結果傳送至指定 Google 試算表。
     """
     try:
-        df = pd.DataFrame([data])
-        file_exists = os.path.isfile(filename)
-        df.to_csv(
-            filename, 
-            mode='a', 
-            index=False, 
-            header=not file_exists, 
-            encoding="utf-8-sig"
+        # 定義存取範圍
+        scopes = [
+            "https://www.googleapis.com/auth/spreadsheets",
+            "https://www.googleapis.com/auth/drive"
+        ]
+        
+        # 從 Streamlit Secrets 讀取憑證
+        # 請於 Streamlit Cloud 控制面板或本地 .streamlit/secrets.toml 設定憑證
+        creds = Credentials.from_service_account_info(
+            st.secrets["gcp_service_account"], 
+            scopes=scopes
         )
+        
+        # 授權並開啟試算表
+        client = gspread.authorize(creds)
+        spreadsheet_id = "1CRbnOGaIfbXu-ZIeKQMgThN2JT3fT6qWRqaMQamQmMo"
+        sheet = client.open_by_key(spreadsheet_id).get_worksheet(0)
+        
+        # 檢查是否需要寫入標題列（若表單為空）
+        if not sheet.get_all_values():
+            sheet.append_row(list(data.keys()))
+            
+        # 寫入數據
+        sheet.append_row(list(data.values()))
         return True
     except Exception as e:
-        logger.error(f"資料寫入錯誤: {str(e)}")
+        logger.error(f"雲端儲存失敗: {str(e)}")
         return False
 
 def main() -> None:
@@ -39,7 +53,7 @@ def main() -> None:
     )
 
     st.title("氣候變遷公眾參與活動問卷")
-    st.caption("Climate-Action-Feedback System")
+    st.caption("連線至彰化縣氣候變遷雲端資料庫")
     
     with st.form("survey_form", clear_on_submit=True):
         st.subheader("基本資料統計")
@@ -79,24 +93,27 @@ def main() -> None:
                 return
 
             record = {
-                "timestamp": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                "gender": gender,
-                "age": age,
-                "township": township,
-                "is_first": is_first,
-                "identities": ",".join(identities),
-                "q1_info": scores[q1],
-                "q2_aware": scores[q2],
-                "q3_env": scores[q3],
-                "q4_conv": scores[q4],
-                "q5_total": scores[q5],
-                "gain": gain,
-                "need": need
+                "時間戳記": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                "性別": gender,
+                "年齡": age,
+                "行政區": township,
+                "首次參加": is_first,
+                "身分標籤": ",".join(identities),
+                "Q1資訊易讀": scores[q1],
+                "Q2意識提升": scores[q2],
+                "Q3環境友善": scores[q3],
+                "Q4參與便利": scores[q4],
+                "Q5整體滿意": scores[q5],
+                "正面獲益": gain,
+                "改善建議": need
             }
 
-            if save_to_csv(record):
-                st.success("提交成功")
-                st.balloons()
+            with st.spinner("資料上傳中..."):
+                if save_to_gsheet(record):
+                    st.success("提交成功，資料已更新至雲端試算表。")
+                    st.balloons()
+                else:
+                    st.error("上傳失敗，請檢查網路連線或系統設定。")
 
 if __name__ == "__main__":
     main()
