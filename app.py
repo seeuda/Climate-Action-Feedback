@@ -88,42 +88,57 @@ def main() -> None:
         st.divider()
         st.subheader("二、 活動感受與友善評估")
         
-        # 五分制量表：改為點選、必填（不提供預設值）
-        scores_map = {
-            "1分 (非常不同意)": 1, "2分 (不同意)": 2, "3分 (普通)": 3, "4分 (同意)": 4, "5分 (非常同意)": 5
+        # 五分制量表：改為單行分數按鍵（避免手機版文字換行）
+        score_labels = {
+            1: "非常不同意",
+            2: "不同意",
+            3: "普通",
+            4: "同意",
+            5: "非常同意"
         }
-        opts = list(scores_map.keys())
+        score_options = list(score_labels.keys())
+
+        st.caption("請點選分數（1~5）：1=非常不同意、2=不同意、3=普通、4=同意、5=非常同意")
 
         q1 = st.radio(
             "1. 資訊易讀性（簡單易懂）",
-            opts,
+            score_options,
             index=None,
-            horizontal=True
+            horizontal=True,
+            format_func=lambda x: f"{x}分"
         )
         q2 = st.radio(
             "2. 意識提升（了解氣候對生活影響）",
-            opts,
+            score_options,
             index=None,
-            horizontal=True
+            horizontal=True,
+            format_func=lambda x: f"{x}分"
         )
         q3 = st.radio(
             "3. 環境友善（場地安全便利）",
-            opts,
+            score_options,
             index=None,
-            horizontal=True
+            horizontal=True,
+            format_func=lambda x: f"{x}分"
         )
         q4 = st.radio(
             "4. 參與便利（時段符合家庭工作）",
-            opts,
+            score_options,
             index=None,
-            horizontal=True
+            horizontal=True,
+            format_func=lambda x: f"{x}分"
         )
         q5 = st.radio(
             "5. 整體滿意度（必填）",
-            opts,
+            score_options,
             index=None,
-            horizontal=True
+            horizontal=True,
+            format_func=lambda x: f"{x}分"
         )
+
+        # 區域上方顯示目前整體滿意度分數
+        overall_score_text = f"{q5}/5" if q5 is not None else "尚未選擇"
+        st.info(f"目前整體滿意度分數：{overall_score_text}")
 
         st.divider()
         st.subheader("三、 開放性建議")
@@ -164,11 +179,11 @@ def main() -> None:
                 "社會角色": final_role,
                 "從業類別": final_industry,
                 "族群屬性": final_group,
-                "Q1資訊易讀": scores_map[q1],
-                "Q2意識提升": scores_map[q2],
-                "Q3環境友善": scores_map[q3],
-                "Q4參與便利": scores_map[q4],
-                "Q5整體滿意": scores_map[q5],
+                "Q1資訊易讀": q1,
+                "Q2意識提升": q2,
+                "Q3環境友善": q3,
+                "Q4參與便利": q4,
+                "Q5整體滿意": q5,
                 "正面獲益": gain,
                 "改善建議": need
             }
