@@ -98,7 +98,12 @@ def main() -> None:
         q2 = st.select_slider("2. 意識提升（了解氣候對生活影響）", options=opts, value="4分 (同意)")
         q3 = st.select_slider("3. 環境友善（場地安全便利）", options=opts, value="4分 (同意)")
         q4 = st.select_slider("4. 參與便利（時段符合家庭工作）", options=opts, value="4分 (同意)")
-        q5 = st.select_slider("5. 整體滿意度", options=opts, value="4分 (同意)")
+        q5 = st.radio(
+            "5. 整體滿意度（必填）",
+            opts,
+            index=None,
+            horizontal=True
+        )
 
         st.divider()
         st.subheader("三、 開放性建議")
@@ -113,6 +118,7 @@ def main() -> None:
             if age == "請選擇": errors.append("「年齡層」尚未選擇")
             if identity_role is None: errors.append("「主要身分」尚未選擇")
             if industry_type is None: errors.append("「從業類別」尚未選擇")
+            if q5 is None: errors.append("「整體滿意度」尚未選擇")
             
             if errors:
                 for err in errors:
