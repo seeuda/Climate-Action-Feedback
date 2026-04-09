@@ -88,16 +88,36 @@ def main() -> None:
         st.divider()
         st.subheader("二、 活動感受與友善評估")
         
-        # 五分制量表：預設值 4分
+        # 五分制量表：改為點選、必填（不提供預設值）
         scores_map = {
             "1分 (非常不同意)": 1, "2分 (不同意)": 2, "3分 (普通)": 3, "4分 (同意)": 4, "5分 (非常同意)": 5
         }
         opts = list(scores_map.keys())
 
-        q1 = st.select_slider("1. 資訊易讀性（簡單易懂）", options=opts, value="4分 (同意)")
-        q2 = st.select_slider("2. 意識提升（了解氣候對生活影響）", options=opts, value="4分 (同意)")
-        q3 = st.select_slider("3. 環境友善（場地安全便利）", options=opts, value="4分 (同意)")
-        q4 = st.select_slider("4. 參與便利（時段符合家庭工作）", options=opts, value="4分 (同意)")
+        q1 = st.radio(
+            "1. 資訊易讀性（簡單易懂）",
+            opts,
+            index=None,
+            horizontal=True
+        )
+        q2 = st.radio(
+            "2. 意識提升（了解氣候對生活影響）",
+            opts,
+            index=None,
+            horizontal=True
+        )
+        q3 = st.radio(
+            "3. 環境友善（場地安全便利）",
+            opts,
+            index=None,
+            horizontal=True
+        )
+        q4 = st.radio(
+            "4. 參與便利（時段符合家庭工作）",
+            opts,
+            index=None,
+            horizontal=True
+        )
         q5 = st.radio(
             "5. 整體滿意度（必填）",
             opts,
@@ -118,6 +138,10 @@ def main() -> None:
             if age == "請選擇": errors.append("「年齡層」尚未選擇")
             if identity_role is None: errors.append("「主要身分」尚未選擇")
             if industry_type is None: errors.append("「從業類別」尚未選擇")
+            if q1 is None: errors.append("「資訊易讀性」尚未選擇")
+            if q2 is None: errors.append("「意識提升」尚未選擇")
+            if q3 is None: errors.append("「環境友善」尚未選擇")
+            if q4 is None: errors.append("「參與便利」尚未選擇")
             if q5 is None: errors.append("「整體滿意度」尚未選擇")
             
             if errors:
