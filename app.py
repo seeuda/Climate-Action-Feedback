@@ -54,7 +54,7 @@ def inject_custom_css() -> None:
         /* ===== 頁面容器 ===== */
         .block-container,
         div[data-testid="stAppViewBlockContainer"] {
-            padding-top: 2.2rem !important;
+            padding-top: 1rem !important;
             padding-bottom: 1.2rem !important;
             padding-left: 0.9rem !important;
             padding-right: 0.9rem !important;
