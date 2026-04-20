@@ -123,6 +123,8 @@ def inject_custom_css() -> None:
             width: 24px !important;
             height: 24px !important;
             margin-right: 6px !important;
+            transform: scale(1.3);
+            accent-color: #111111 !important;
         }
 
         /* ===== selectbox ===== */
