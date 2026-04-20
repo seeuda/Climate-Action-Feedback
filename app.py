@@ -266,8 +266,8 @@ def inject_custom_css() -> None:
 
             div[role="radiogroup"] {
                 gap: 0.1rem 0.1rem !important;
-                flex-wrap: nowrap !important;
-                overflow-x: auto !important;
+                flex-wrap: wrap !important;
+                overflow-x: visible !important;
             }
 
             /* 1~5 分量表：固定五等分，避免每題看起來寬度不一致 */
