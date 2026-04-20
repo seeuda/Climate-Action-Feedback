@@ -63,7 +63,7 @@ def inject_custom_css() -> None:
 
         /* 避免主內容被上方空白/固定區域擠壓 */
         div[data-testid="stAppViewContainer"] > .main {
-            padding-top: 2 !important;
+            padding-top: 5 !important;
         }
 
         /* ===== 主標題 ===== */
