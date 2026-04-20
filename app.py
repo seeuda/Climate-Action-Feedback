@@ -67,7 +67,7 @@ def inject_custom_css() -> None:
 
         /* ===== 主標題 ===== */
         h1 {
-            font-size: 3rem !important;
+            font-size: 2.8rem !important;
             line-height: 1.25 !important;
             font-weight: 700 !important;
             margin-top: 0.2rem !important;
@@ -108,7 +108,7 @@ def inject_custom_css() -> None:
 
         /* ===== radio 選項 ===== */
         div[role="radiogroup"] label {
-            font-size: 1.28rem !important;
+            font-size: 1.35rem !important;
             line-height: 1.4 !important;
             font-weight: 500 !important;
             margin-right: 1rem !important;
