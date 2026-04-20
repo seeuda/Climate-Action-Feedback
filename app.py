@@ -54,7 +54,7 @@ def inject_custom_css() -> None:
         /* ===== 頁面容器 ===== */
         .block-container,
         div[data-testid="stAppViewBlockContainer"] {
-            padding-top: 1rem !important;
+            padding-top: 2.5rem !important;
             padding-bottom: 1.2rem !important;
             padding-left: 0.9rem !important;
             padding-right: 0.9rem !important;
@@ -218,7 +218,7 @@ def inject_custom_css() -> None:
         @media (max-width: 640px) {
             .block-container,
             div[data-testid="stAppViewBlockContainer"] {
-                padding-top: 1.35rem !important;
+                padding-top: 2.35rem !important;
                 padding-left: 0.8rem !important;
                 padding-right: 0.8rem !important;
                 padding-bottom: 1rem !important;
