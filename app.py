@@ -112,7 +112,8 @@ def inject_custom_css() -> None:
             line-height: 1.4 !important;
             font-weight: 500 !important;
             margin-right: 0.7rem !important;
-            white-space: nowrap !important;
+            white-space: normal !important;
+            word-break: break-word !important;
             display: inline-flex !important;
             align-items: center !important;
             column-gap: 0.25rem !important;
@@ -267,6 +268,7 @@ def inject_custom_css() -> None:
                 justify-content: center !important;
                 font-size: 0.95rem !important;
                 column-gap: 0.15rem !important;
+                white-space: nowrap !important;
             }
 
             div[role="radiogroup"]:has(> label:nth-child(5):last-child) > label input[type="radio"] {
