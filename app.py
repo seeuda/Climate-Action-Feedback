@@ -63,7 +63,7 @@ def inject_custom_css() -> None:
 
         /* 避免主內容被上方空白/固定區域擠壓 */
         div[data-testid="stAppViewContainer"] > .main {
-            padding-top: 0 !important;
+            padding-top: 2 !important;
         }
 
         /* ===== 主標題 ===== */
@@ -386,7 +386,7 @@ def main() -> None:
         identity_role = st.radio(
             "您的主要身分（社會角色）：",
             [
-                "一般民眾（不具備社區幹部或志工身分）",
+                "一般民眾（非社區幹部或志工身分）",
                 "村里鄰長／社區幹部／志工",
                 "其他",
             ],
