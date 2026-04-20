@@ -119,6 +119,12 @@ def inject_custom_css() -> None:
             gap: 0.15rem 0.45rem !important;
         }
 
+        div[role="radiogroup"] input[type="radio"] {
+            width: 24px !important;
+            height: 24px !important;
+            margin-right: 6px !important;
+        }
+
         /* ===== selectbox ===== */
         div[data-baseweb="select"] > div {
             min-height: 54px !important;
@@ -157,7 +163,7 @@ def inject_custom_css() -> None:
         /* ===== 按鈕 ===== */
         .stButton > button {
             min-height: 56px !important;
-            font-size: 1.28rem !important;
+            font-size: 1.35rem !important;
             font-weight: 700 !important;
             border-radius: 0.85rem !important;
         }
@@ -199,7 +205,7 @@ def inject_custom_css() -> None:
             .stSelectbox > label,
             .stTextInput > label,
             .stTextArea > label {
-                font-size: 1.32rem !important;
+                font-size: 1.4rem !important;
             }
 
             div[role="radiogroup"] label {
