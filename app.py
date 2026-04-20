@@ -52,7 +52,8 @@ def inject_custom_css() -> None:
         """
         <style>
         /* ===== 頁面容器 ===== */
-        .block-container {
+        .block-container,
+        div[data-testid="stAppViewBlockContainer"] {
             padding-top: 1rem !important;
             padding-bottom: 1.2rem !important;
             padding-left: 0.9rem !important;
@@ -72,7 +73,7 @@ def inject_custom_css() -> None:
                 font-weight: 700 !important;
                 margin-top: 0 !important;
                 margin-bottom: 0.45rem !important;
-                padding-top: 0.08rem !important;
+                padding-top: 0.16rem !important;
                 overflow: visible !important;
             }
 
@@ -205,8 +206,9 @@ def inject_custom_css() -> None:
 
         /* ===== 手機版微調 ===== */
         @media (max-width: 640px) {
-            .block-container {
-                padding-top: 0.8rem !important;
+            .block-container,
+            div[data-testid="stAppViewBlockContainer"] {
+                padding-top: 1.35rem !important;
                 padding-left: 0.8rem !important;
                 padding-right: 0.8rem !important;
                 padding-bottom: 1rem !important;
@@ -216,7 +218,7 @@ def inject_custom_css() -> None:
                 font-size: 2.25rem !important;
                 line-height: 1.25 !important;
                 margin-top: 0 !important;
-                padding-top: 0.08rem !important;
+                padding-top: 0.2rem !important;
             }
 
             h2, h3 {
@@ -231,9 +233,10 @@ def inject_custom_css() -> None:
             }
 
             div[role="radiogroup"] label {
-                font-size: 1.02rem !important;
-                margin-right: 0.5rem !important;
+                font-size: 1rem !important;
+                margin-right: 0.2rem !important;
                 column-gap: 0.2rem !important;
+                white-space: nowrap !important;
             }
 
             div[role="radiogroup"] input[type="radio"] {
@@ -250,29 +253,9 @@ def inject_custom_css() -> None:
             }
 
             div[role="radiogroup"] {
-                gap: 0.1rem 0.2rem !important;
-            }
-
-            /* 手機 1~5 分：固定單行等寬，不使用橫向捲動 */
-            div[role="radiogroup"]:has(> label:nth-child(5):last-child) {
-                display: flex !important;
+                gap: 0.1rem 0.1rem !important;
                 flex-wrap: nowrap !important;
-                overflow-x: hidden !important;
-                gap: 0 !important;
-            }
-
-            div[role="radiogroup"]:has(> label:nth-child(5):last-child) > label {
-                flex: 1 1 0 !important;
-                min-width: 0 !important;
-                margin-right: 0 !important;
-                justify-content: center !important;
-                font-size: 0.95rem !important;
-                column-gap: 0.15rem !important;
-                white-space: nowrap !important;
-            }
-
-            div[role="radiogroup"]:has(> label:nth-child(5):last-child) > label input[type="radio"] {
-                margin-right: 2px !important;
+                overflow-x: auto !important;
             }
 
             div[data-baseweb="select"] > div,
