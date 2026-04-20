@@ -34,6 +34,30 @@ def save_to_gsheet(data: Dict[str, Any]) -> bool:
 
 def main() -> None:
     st.set_page_config(page_title="Climate-Action-Feedback", page_icon="🌍", layout="centered")
+    st.markdown(
+        """
+        <style>
+        :root {
+            --min-readable-font-size: 1.75rem;
+        }
+
+        div[data-testid="stCaptionContainer"] p,
+        div[data-testid="stMarkdownContainer"] p,
+        div[data-testid="stMarkdownContainer"] li,
+        div[data-testid="stMarkdownContainer"] span,
+        label,
+        input,
+        textarea,
+        [data-baseweb="select"] div,
+        [role="radiogroup"] label,
+        [role="radiogroup"] span {
+            font-size: var(--min-readable-font-size) !important;
+            line-height: 1.35 !important;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
 
     st.title("氣候變遷公眾參與活動問卷")
     st.caption("彰化縣環境保護局感謝您的參與")
