@@ -53,7 +53,7 @@ def inject_custom_css() -> None:
         <style>
         /* ===== 頁面容器 ===== */
         .block-container {
-            padding-top: 2.4rem !important;
+            padding-top: 1.15rem !important;
             padding-bottom: 1.2rem !important;
             padding-left: 0.9rem !important;
             padding-right: 0.9rem !important;
@@ -70,9 +70,9 @@ def inject_custom_css() -> None:
             font-size: 2.8rem !important;
             line-height: 1.25 !important;
             font-weight: 700 !important;
-            margin-top: 0.2rem !important;
+            margin-top: 0 !important;
             margin-bottom: 0.45rem !important;
-            padding-top: 0.15rem !important;
+            padding-top: 0 !important;
             overflow: visible !important;
         }
 
@@ -114,6 +114,14 @@ def inject_custom_css() -> None:
             margin-right: 1rem !important;
             white-space: normal !important;
             word-break: break-word !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            column-gap: 0.25rem !important;
+        }
+
+        div[role="radiogroup"] label[data-baseweb="radio"] > div:first-child {
+            margin-top: 0 !important;
+            transform: translateY(1px);
         }
 
         div[role="radiogroup"] {
@@ -188,7 +196,7 @@ def inject_custom_css() -> None:
         /* ===== 手機版微調 ===== */
         @media (max-width: 640px) {
             .block-container {
-                padding-top: 2.1rem !important;
+                padding-top: 0.75rem !important;
                 padding-left: 0.8rem !important;
                 padding-right: 0.8rem !important;
                 padding-bottom: 1rem !important;
@@ -197,8 +205,8 @@ def inject_custom_css() -> None:
             h1 {
                 font-size: 2.25rem !important;
                 line-height: 1.25 !important;
-                margin-top: 0.15rem !important;
-                padding-top: 0.1rem !important;
+                margin-top: 0 !important;
+                padding-top: 0 !important;
             }
 
             h2, h3 {
