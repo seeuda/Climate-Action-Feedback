@@ -91,8 +91,8 @@ def inject_custom_css() -> None:
         div[data-testid="stMarkdownContainer"] p,
         div[data-testid="stMarkdownContainer"] li,
         div[data-testid="stAlertContainer"] {
-            font-size: 1.2rem !important;
-            line-height: 1.5 !important;
+            font-size: 1.4rem !important;
+            line-height: 1.7 !important;
         }
 
         /* ===== 欄位標題 ===== */
@@ -101,7 +101,7 @@ def inject_custom_css() -> None:
         .stTextInput > label,
         .stTextArea > label {
             font-size: 1.45rem !important;
-            line-height: 1.4 !important;
+            line-height: 1.6 !important;
             font-weight: 600 !important;
             padding-top: 0.05rem !important;
         }
@@ -198,14 +198,14 @@ def inject_custom_css() -> None:
             }
 
             h2, h3 {
-                font-size: 1.9rem !important;
+                font-size: 2rem !important;
             }
 
             .stRadio > label,
             .stSelectbox > label,
             .stTextInput > label,
             .stTextArea > label {
-                font-size: 1.4rem !important;
+                font-size: 1.5rem !important;
             }
 
             div[role="radiogroup"] label {
