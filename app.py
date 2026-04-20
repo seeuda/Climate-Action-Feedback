@@ -258,6 +258,23 @@ def inject_custom_css() -> None:
                 overflow-x: auto !important;
             }
 
+            /* 1~5 分量表：固定五等分，避免每題看起來寬度不一致 */
+            div[role="radiogroup"]:has(> label:nth-child(5):last-child) {
+                display: grid !important;
+                grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+                gap: 0.1rem !important;
+                overflow-x: visible !important;
+                width: 100% !important;
+            }
+
+            div[role="radiogroup"]:has(> label:nth-child(5):last-child) > label {
+                min-width: 0 !important;
+                width: 100% !important;
+                margin-right: 0 !important;
+                justify-content: center !important;
+                column-gap: 0.14rem !important;
+            }
+
             div[data-baseweb="select"] > div,
             .stTextInput input {
                 min-height: 52px !important;
