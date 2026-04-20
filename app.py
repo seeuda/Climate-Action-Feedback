@@ -123,6 +123,11 @@ def inject_custom_css() -> None:
         div[role="radiogroup"] label[data-baseweb="radio"] > div:first-child {
             margin-top: 0 !important;
             transform: translateY(1px);
+            min-width: 22px !important;
+            min-height: 22px !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
         }
 
         div[role="radiogroup"] {
@@ -143,9 +148,14 @@ def inject_custom_css() -> None:
 
         div[role="radiogroup"] label[data-baseweb="radio"] > div:first-child > div {
             border-width: 2px !important;
-            border-color: #111111 !important;
+            border-color: #2f3440 !important;
+            background: #ffffff !important;
             width: 20px !important;
             height: 20px !important;
+        }
+
+        div[role="radiogroup"] label[data-baseweb="radio"] > div:first-child > div > div {
+            background: #111111 !important;
         }
 
         /* ===== selectbox ===== */
@@ -250,6 +260,8 @@ def inject_custom_css() -> None:
                 width: 18px !important;
                 height: 18px !important;
                 border-width: 2px !important;
+                border-color: #2f3440 !important;
+                background: #ffffff !important;
             }
 
             div[role="radiogroup"] {
