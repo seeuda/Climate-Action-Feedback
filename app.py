@@ -364,6 +364,7 @@ def main() -> None:
                 "您的性別：",
                 ["男", "女", "其他／不想透露"],
                 horizontal=True,
+                index=None,
             )
             age = st.selectbox(
                 "您的年齡層：",
@@ -379,6 +380,7 @@ def main() -> None:
                 "首次參加此類活動？",
                 ["是", "否"],
                 horizontal=True,
+                index=None,
             )
 
         st.divider()
