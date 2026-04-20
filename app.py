@@ -54,7 +54,7 @@ def inject_custom_css() -> None:
         /* ===== 頁面容器 ===== */
         .block-container,
         div[data-testid="stAppViewBlockContainer"] {
-            padding-top: 1rem !important;
+            padding-top: 2.2rem !important;
             padding-bottom: 1.2rem !important;
             padding-left: 0.9rem !important;
             padding-right: 0.9rem !important;
@@ -63,7 +63,7 @@ def inject_custom_css() -> None:
 
         /* 避免主內容被上方空白/固定區域擠壓 */
         div[data-testid="stAppViewContainer"] > .main {
-            padding-top: 5 !important;
+            padding-top: 0 !important;
         }
 
         /* ===== 主標題 ===== */
