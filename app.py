@@ -112,7 +112,8 @@ def inject_custom_css() -> None:
             line-height: 1.4 !important;
             font-weight: 500 !important;
             margin-right: 1rem !important;
-            white-space: nowrap !important;
+            white-space: normal !important;
+            word-break: break-word !important;
         }
 
         div[role="radiogroup"] {
@@ -122,9 +123,10 @@ def inject_custom_css() -> None:
         div[role="radiogroup"] input[type="radio"] {
             width: 24px !important;
             height: 24px !important;
-            margin-right: 6px !important;
-            transform: scale(1.3);
+            min-width: 24px !important;
+            margin-right: 8px !important;
             accent-color: #111111 !important;
+            cursor: pointer !important;
         }
 
         /* ===== selectbox ===== */
@@ -193,26 +195,32 @@ def inject_custom_css() -> None:
             }
 
             h1 {
-                font-size: 2.6rem !important;
+                font-size: 2.25rem !important;
                 line-height: 1.25 !important;
                 margin-top: 0.15rem !important;
                 padding-top: 0.1rem !important;
             }
 
             h2, h3 {
-                font-size: 2rem !important;
+                font-size: 1.65rem !important;
             }
 
             .stRadio > label,
             .stSelectbox > label,
             .stTextInput > label,
             .stTextArea > label {
-                font-size: 1.5rem !important;
+                font-size: 1.3rem !important;
             }
 
             div[role="radiogroup"] label {
                 font-size: 1.16rem !important;
                 margin-right: 0.75rem !important;
+            }
+
+            div[role="radiogroup"] input[type="radio"] {
+                width: 22px !important;
+                height: 22px !important;
+                min-width: 22px !important;
             }
 
             div[data-baseweb="select"] > div,
