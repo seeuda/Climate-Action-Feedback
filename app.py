@@ -54,7 +54,7 @@ body{{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgro
 .bar{{display:flex;align-items:center;gap:8px;padding:8px 12px;margin-bottom:6px;
   background:#f8f9fa;border:1px solid #dee2e6;border-radius:10px}}
 .lbl{{font-size:13px;color:#6c757d;white-space:nowrap}}
-.val{{font-size:15px;font-weight:500;color:#212529;flex:1}}
+.val{{font-size:18px;font-weight:500;color:#212529;flex:1}}
 .clr{{font-size:12px;color:#6c757d;background:none;border:1px solid #ced4da;
   border-radius:6px;padding:3px 8px;cursor:pointer}}
 .clr:hover{{background:#e9ecef}}
