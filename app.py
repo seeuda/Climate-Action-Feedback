@@ -42,6 +42,8 @@ _TOWNS_JS = r"""const TOWNS = [
 
 def _build_map_html(current_value: str = "") -> str:
     """產生彰化縣地圖選擇器的完整 HTML，供 st.components.v1.html 嵌入。"""
+    if not isinstance(current_value, str):
+        current_value = ""
     escaped = current_value.replace("'", "\\'").replace("`", "\\`")
     colors = "['#B5D4F4','#9FE1CB','#FAC775','#C0DD97','#F5C4B3','#CECBF6','#F0997B','#85B7EB','#EAF3DE','#FAEEDA','#E1F5EE','#AFA9EC','#5DCAA5']"
 
@@ -229,8 +231,9 @@ def main() -> None:
             st.markdown("**居住地區（彰化縣）：**")
             map_html = _build_map_html(st.session_state["township"])
             result = components.html(map_html, height=480, scrolling=False)
-            # postMessage 回傳值會存在 result；若非 None 則更新 session_state
-            if result is not None:
+            # components.html 並非自訂 component，回傳值可能不是字串（例如 DeltaGenerator）；
+            # 僅在收到字串時才寫回 session_state，避免後續 rerun 型別錯誤。
+            if isinstance(result, str):
                 st.session_state["township"] = result
 
             is_first = st.radio("首次參加此類活動？", ["是", "否"], horizontal=True, index=None)
