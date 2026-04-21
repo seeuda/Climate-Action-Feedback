@@ -62,7 +62,7 @@ body{{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgro
 .out{{display:flex;align-items:center;justify-content:center;gap:6px;
   padding:8px;margin-top:6px;width:100%;background:white;
   border:1px solid #ced4da;border-radius:8px;cursor:pointer;
-  font-size:13px;color:#6c757d;font-family:inherit}}
+  font-size:16px;color:#6c757d;font-family:inherit}}
 .out:hover{{background:#f8f9fa}}
 .out.sel{{background:#dbeafe;border-color:#3b82f6;color:#1e40af;font-weight:500}}
 </style></head><body>
