@@ -42,6 +42,8 @@ _TOWNS_JS = r"""const TOWNS = [
 
 def _build_map_html(current_value: str = "") -> str:
     """產生彰化縣地圖選擇器的完整 HTML，供 st.components.v1.html 嵌入。"""
+    if not isinstance(current_value, str):
+        current_value = ""
     escaped = current_value.replace("'", "\\'").replace("`", "\\`")
     colors = "['#B5D4F4','#9FE1CB','#FAC775','#C0DD97','#F5C4B3','#CECBF6','#F0997B','#85B7EB','#EAF3DE','#FAEEDA','#E1F5EE','#AFA9EC','#5DCAA5']"
 
@@ -79,7 +81,17 @@ const C={colors};
 const svg=document.getElementById('map');
 let cur=null;
 const iv='{escaped}';
-function send(v){{window.parent.postMessage({{type:'streamlit:setComponentValue',value:v}},'*');}}
+function send(v){{
+  window.parent.postMessage({{type:'streamlit:setComponentValue',value:v}},'*');
+  try {{
+    const u = new URL(window.parent.location.href);
+    if (v) u.searchParams.set('township', v);
+    else u.searchParams.delete('township');
+    window.parent.history.replaceState({{}}, '', u);
+  }} catch (e) {{
+    console.warn('sync township to query params failed', e);
+  }}
+}}
 TOWNS.forEach((t,i)=>{{
   const p=document.createElementNS('http://www.w3.org/2000/svg','path');
   p.setAttribute('d',t.d);p.setAttribute('fill',C[i%C.length]);
@@ -212,6 +224,13 @@ def main() -> None:
     if "township" not in st.session_state:
         st.session_state["township"] = ""
 
+    # components.html 無法直接回傳值到 Python，改由 query params 同步地圖選擇結果。
+    qp_township = st.query_params.get("township", "")
+    if isinstance(qp_township, list):
+        qp_township = qp_township[0] if qp_township else ""
+    if isinstance(qp_township, str) and qp_township != st.session_state["township"]:
+        st.session_state["township"] = qp_township
+
     st.title("氣候變遷公眾參與活動問卷")
     st.caption("彰化縣環境保護局感謝您的參與")
 
@@ -228,10 +247,7 @@ def main() -> None:
             # ── 地圖選擇器 ──
             st.markdown("**居住地區（彰化縣）：**")
             map_html = _build_map_html(st.session_state["township"])
-            result = components.html(map_html, height=480, scrolling=False)
-            # postMessage 回傳值會存在 result；若非 None 則更新 session_state
-            if result is not None:
-                st.session_state["township"] = result
+            components.html(map_html, height=480, scrolling=False)
 
             is_first = st.radio("首次參加此類活動？", ["是", "否"], horizontal=True, index=None)
 
