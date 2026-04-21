@@ -326,7 +326,9 @@ def main() -> None:
                            else (specific_group if specific_group != "無" else ""))
 
             record = {
-                "時間戳記": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                "時間戳記": datetime.datetime.now(
+                    datetime.timezone(datetime.timedelta(hours=8))
+                ).strftime("%Y-%m-%d %H:%M:%S"),
                 "性別": gender,
                 "年齡": age,
                 "行政區": township_val.strip(),
