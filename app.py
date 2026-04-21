@@ -103,7 +103,7 @@ TOWNS.forEach((t,i)=>{{
   const tx=document.createElementNS('http://www.w3.org/2000/svg','text');
   tx.setAttribute('x',t.cx);tx.setAttribute('y',t.cy);
   tx.setAttribute('text-anchor','middle');tx.setAttribute('dominant-baseline','middle');
-  tx.setAttribute('font-size','7.5');tx.setAttribute('fill','#1e3a5f');
+  tx.setAttribute('font-size','10');tx.setAttribute('fill','#1e3a5f');
   tx.setAttribute('pointer-events','none');tx.textContent=t.name;
   svg.appendChild(tx);
   if(t.name===iv){{p.setAttribute('stroke','#185FA5');p.setAttribute('stroke-width','2');cur=p;}}
