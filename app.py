@@ -196,7 +196,7 @@ def inject_custom_css() -> None:
 # ── 必填驗證 ───────────────────────────────────────────────────────────────
 
 def build_required_error_list(
-    township, age, identity_role, industry_type, q1, q2, q3, q4, q5
+    township, age, identity_role, industry_type, specific_group, other_group_text, q1, q2, q3, q4, q5
 ) -> list[str]:
     errors = []
     if not township or not township.strip():
@@ -207,6 +207,8 @@ def build_required_error_list(
         errors.append("「主要身分」尚未選擇")
     if industry_type is None:
         errors.append("「從業類別」尚未選擇")
+    if specific_group == "其他特定族群" and not other_group_text.strip():
+        errors.append("「請說明特定族群身分」為必填")
     for label, val in [("資訊易讀性", q1), ("意識提升", q2), ("環境友善", q3),
                        ("參與便利", q4), ("整體滿意度", q5)]:
         if val is None:
@@ -279,7 +281,7 @@ def main() -> None:
         )
         other_group_text = ""
         if specific_group == "其他特定族群":
-            other_group_text = st.text_input("請說明特定族群身分（選填）：", key="group_other",
+            other_group_text = st.text_input("請說明特定族群身分：", key="group_other",
                                              placeholder="請輸入您的族群屬性說明")
 
         st.divider()
@@ -307,7 +309,7 @@ def main() -> None:
         if st.button("提交問卷", type="primary", use_container_width=True):
             township_val = st.session_state.get("township", "")
             errors = build_required_error_list(
-                township_val, age, identity_role, industry_type, q1, q2, q3, q4, q5
+                township_val, age, identity_role, industry_type, specific_group, other_group_text, q1, q2, q3, q4, q5
             )
             if errors:
                 for err in errors:
